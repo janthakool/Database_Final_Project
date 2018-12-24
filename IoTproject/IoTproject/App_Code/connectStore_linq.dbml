@@ -1,0 +1,325 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="Smartwatch_IoTFakeSensor" Class="connectStore_linqDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="WebSettings" ConnectionString="Data Source=smartwatchiot.database.windows.net;Initial Catalog=Smartwatch_IoTFakeSensor;Persist Security Info=True;User ID=Admin555" SettingsObjectName="System.Configuration.ConfigurationManager.ConnectionStrings" SettingsPropertyName="Smartwatch_IoTFakeSensorConnectionString1" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.Account" Member="Accounts">
+    <Type Name="Account">
+      <Column Name="accountid" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="username" Type="System.String" DbType="NVarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="password" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Column Name="userlevel" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="packetid" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="startpacket" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="enddatepacket" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Association Name="User_Account" Member="User" ThisKey="accountid" OtherKey="userid" Type="User" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.[User]" Member="Users">
+    <Type Name="User">
+      <Column Name="userid" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="firstname" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Column Name="lastname" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Column Name="dept_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="address" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="salary" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="age" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="User_Account" Member="Account" ThisKey="userid" OtherKey="accountid" Type="Account" Cardinality="One" />
+      <Association Name="User_GP" Member="GPs" ThisKey="userid" OtherKey="userid" Type="GP" />
+      <Association Name="User_Heartrate" Member="Heartrates" ThisKey="userid" OtherKey="userid" Type="Heartrate" />
+      <Association Name="User_Sale" Member="Sales" ThisKey="userid" OtherKey="userid" Type="Sale" />
+      <Association Name="Department_User" Member="Department" ThisKey="dept_id" OtherKey="dept_id" Type="Department" IsForeignKey="true" DeleteRule="CASCADE" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Department" Member="Departments">
+    <Type Name="Department">
+      <Column Name="dept_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="deptname" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Association Name="Department_User" Member="Users" ThisKey="dept_id" OtherKey="dept_id" Type="User" />
+    </Type>
+  </Table>
+  <Table Name="dbo.GPS" Member="GPs">
+    <Type Name="GP">
+      <Column Name="userid" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="gps" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="daterecord" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="time" Type="System.TimeSpan" DbType="Time" CanBeNull="true" />
+      <Association Name="User_GP" Member="User" ThisKey="userid" OtherKey="userid" Type="User" IsForeignKey="true" DeleteRule="CASCADE" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Heartrate" Member="Heartrates">
+    <Type Name="Heartrate">
+      <Column Name="userid" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="hr" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="daterecord" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="time" Type="System.TimeSpan" DbType="Time" CanBeNull="true" />
+      <Association Name="User_Heartrate" Member="User" ThisKey="userid" OtherKey="userid" Type="User" IsForeignKey="true" DeleteRule="CASCADE" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Item" Member="Items">
+    <Type Name="Item">
+      <Column Name="itemid" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="itemname" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Column Name="price" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="amount" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="Item_Sale" Member="Sales" ThisKey="itemid" OtherKey="itemid" Type="Sale" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Sale" Member="Sales">
+    <Type Name="Sale">
+      <Column Name="saleid" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="itemid" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="itemname" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="amount" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="price" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="userid" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="paid" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="Item_Sale" Member="Item" ThisKey="itemid" OtherKey="itemid" Type="Item" IsForeignKey="true" DeleteRule="CASCADE" />
+      <Association Name="User_Sale" Member="User" ThisKey="userid" OtherKey="userid" Type="User" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Function Name="dbo.buyPacket" Method="buyPacket">
+    <Parameter Name="account_id" Type="System.Int32" DbType="Int" />
+    <Parameter Name="packet_id" Type="System.Int32" DbType="Int" />
+    <Parameter Name="start_date" Type="System.DateTime" DbType="Date" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.checkIsPremium" Method="checkIsPremium">
+    <Parameter Name="accountid" Type="System.Int32" DbType="Int" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.checkPacketInCart" Method="checkPacketInCart">
+    <Parameter Name="itemid" Type="System.Int32" DbType="Int" />
+    <Parameter Name="account" Type="System.Int32" DbType="Int" />
+    <ElementType Name="checkPacketInCartResult">
+      <Column Name="saleid" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="itemid" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="itemname" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="amount" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="price" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="userid" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="paid" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.upDatePacket" Method="upDatePacket">
+    <Parameter Name="saleid" Type="System.Int32" DbType="Int" />
+    <Parameter Name="item_id" Type="System.Int32" DbType="Int" />
+    <Parameter Name="accountid" Type="System.Int32" DbType="Int" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.COUNTofHR" Method="COUNTofHR">
+    <Parameter Name="userid" Type="System.Int32" DbType="Int" />
+    <Parameter Name="startdate" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="enddate" Type="System.DateTime" DbType="Date" />
+    <ElementType Name="COUNTofHRResult">
+      <Column Name="" Member="Column1" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.CountOfvelocityGPS" Method="CountOfvelocityGPS">
+    <Parameter Name="userid" Type="System.Int32" DbType="Int" />
+    <Parameter Name="startdate" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="enddate" Type="System.DateTime" DbType="Date" />
+    <ElementType Name="CountOfvelocityGPSResult">
+      <Column Name="" Member="Column1" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.getName" Method="getName">
+    <Parameter Name="accountid" Type="System.Int32" DbType="Int" />
+    <ElementType Name="getNameResult">
+      <Column Name="firstname" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.[getUserlever ]" Method="getUserlever_">
+    <Parameter Name="accountid" Type="System.Int32" DbType="Int" />
+    <ElementType Name="getUserlever_Result">
+      <Column Name="userlevel" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.INSERT_department" Method="INSERT_department">
+    <Parameter Name="dept_name" Type="System.String" DbType="VarChar(20)" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.INSERT_heartrate" Method="INSERT_heartrate">
+    <Parameter Name="user_id" Type="System.Int32" DbType="Int" />
+    <Parameter Name="heartrate" Type="System.Int32" DbType="Int" />
+    <Parameter Name="date" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="time" Type="System.TimeSpan" DbType="Time" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.INSERT_velocityGPS" Method="INSERT_velocityGPS">
+    <Parameter Name="user_id" Type="System.Int32" DbType="Int" />
+    <Parameter Name="velocity" Type="System.Int32" DbType="Int" />
+    <Parameter Name="date" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="time" Type="System.TimeSpan" DbType="Time" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.insertItemsToSale" Method="insertItemsToSale">
+    <Parameter Name="userid" Type="System.Int32" DbType="Int" />
+    <Parameter Name="itemsid" Type="System.Int32" DbType="Int" />
+    <Parameter Name="amount" Type="System.Int32" DbType="Int" />
+    <Parameter Name="paid" Type="System.Int32" DbType="Int" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.insertPacketToSaleorCart" Method="insertPacketToSaleorCart">
+    <Parameter Name="itemid" Type="System.Int32" DbType="Int" />
+    <Parameter Name="itemname" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="amount" Type="System.Int32" DbType="Int" />
+    <Parameter Name="price" Type="System.Int32" DbType="Int" />
+    <Parameter Name="userid" Type="System.Int32" DbType="Int" />
+    <Parameter Name="paid" Type="System.Int32" DbType="Int" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.isAdmin" Method="isAdmin">
+    <Parameter Name="account_id" Type="System.Int32" DbType="Int" />
+    <ElementType Name="isAdminResult">
+      <Column Name="dept_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.Register" Method="Register">
+    <Parameter Name="account_id" Type="System.Int32" DbType="Int" />
+    <Parameter Name="account_username" Type="System.String" DbType="NVarChar(20)" />
+    <Parameter Name="account_password" Type="System.String" DbType="NVarChar(20)" />
+    <Parameter Name="account_userlevel" Type="System.Int32" DbType="Int" />
+    <Parameter Name="account_packetid" Type="System.Int32" DbType="Int" />
+    <Parameter Name="account_startpacket" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="account_enddatepacket" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="user_id" Type="System.Int32" DbType="Int" />
+    <Parameter Name="user_firstname" Type="System.String" DbType="NVarChar(20)" />
+    <Parameter Name="user_lastname" Type="System.String" DbType="NVarChar(20)" />
+    <Parameter Name="user_deptid" Type="System.Int32" DbType="Int" />
+    <Parameter Name="user_address" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="user_salary" Type="System.Int32" DbType="Int" />
+    <Parameter Name="user_age" Type="System.Int32" DbType="Int" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.showAllHeatrateByID" Method="showAllHeatrateByID">
+    <Parameter Name="account_id" Type="System.Int32" DbType="Int" />
+    <Parameter Name="sortBy" Type="System.Int32" DbType="Int" />
+    <ElementType Name="showAllHeatrateByIDResult">
+      <Column Name="userid" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="hr" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="daterecord" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="time" Type="System.TimeSpan" DbType="Time" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.showHRBetweenDate" Method="showHRBetweenDate">
+    <Parameter Name="userid" Type="System.Int32" DbType="Int" />
+    <Parameter Name="startdate" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="enddate" Type="System.DateTime" DbType="Date" />
+    <ElementType Name="showHRBetweenDateResult">
+      <Column Name="userid" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="hr" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="daterecord" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="time" Type="System.TimeSpan" DbType="Time" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.showOrder" Method="showOrder">
+    <Parameter Name="userid" Type="System.Int32" DbType="Int" />
+    <ElementType Name="showOrderResult">
+      <Column Name="saleid" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="itemid" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="itemname" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="amount" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="price" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="userid" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="paid" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.showSaleSortByPaid" Method="showSaleSortByPaid">
+    <Parameter Name="account_id" Type="System.Int32" DbType="Int" />
+    <Parameter Name="isPaid_1" Type="System.Int32" DbType="Int" />
+    <Parameter Name="isPaid_2" Type="System.Int32" DbType="Int" />
+    <ElementType Name="showSaleSortByPaidResult">
+      <Column Name="saleid" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="itemid" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="itemname" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="amount" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="price" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="userid" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="paid" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.showSaleSortByPaidAdmin" Method="showSaleSortByPaidAdmin">
+    <Parameter Name="isPaid_1" Type="System.Int32" DbType="Int" />
+    <Parameter Name="isPaid_2" Type="System.Int32" DbType="Int" />
+    <ElementType Name="showSaleSortByPaidAdminResult">
+      <Column Name="saleid" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="itemid" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="itemname" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="amount" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="price" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="userid" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="paid" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.showSaleSortByPaidClient" Method="showSaleSortByPaidClient">
+    <Parameter Name="account_id" Type="System.Int32" DbType="Int" />
+    <Parameter Name="isPaid_1" Type="System.Int32" DbType="Int" />
+    <Parameter Name="isPaid_2" Type="System.Int32" DbType="Int" />
+    <ElementType Name="showSaleSortByPaidClientResult">
+      <Column Name="saleid" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="itemid" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="itemname" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="amount" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="price" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="userid" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="paid" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.showvelocityBetweenDate" Method="showvelocityBetweenDate">
+    <Parameter Name="userid" Type="System.Int32" DbType="Int" />
+    <Parameter Name="startdate" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="enddate" Type="System.DateTime" DbType="Date" />
+    <ElementType Name="showvelocityBetweenDateResult">
+      <Column Name="userid" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="gps" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="daterecord" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="time" Type="System.TimeSpan" DbType="Time" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.SUMofHR" Method="SUMofHR">
+    <Parameter Name="userid" Type="System.Int32" DbType="Int" />
+    <Parameter Name="startdate" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="enddate" Type="System.DateTime" DbType="Date" />
+    <ElementType Name="SUMofHRResult">
+      <Column Name="" Member="Column1" Type="System.Double" DbType="Float" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.SUMofvelocityGPS" Method="SUMofvelocityGPS">
+    <Parameter Name="userid" Type="System.Int32" DbType="Int" />
+    <Parameter Name="startdate" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="enddate" Type="System.DateTime" DbType="Date" />
+    <ElementType Name="SUMofvelocityGPSResult">
+      <Column Name="" Member="Column1" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.showPremiumUserOrFreeuser" Method="showPremiumUserOrFreeuser">
+    <Parameter Name="isPremium" Type="System.Int32" DbType="Int" />
+    <ElementType Name="showPremiumUserOrFreeuserResult">
+      <Column Name="userid" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="firstname" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Column Name="lastname" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Column Name="packetid" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="startpacket" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="enddatepacket" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.showAllincome" Method="showAllincome">
+    <ElementType Name="showAllincomeResult">
+      <Column Name="" Member="Column1" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.showAllincomeI1" Method="showAllincomeI1">
+    <ElementType Name="showAllincomeI1Result">
+      <Column Name="" Member="Column1" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.alertLessThan7Days" Method="alertLessThan7Days">
+    <Parameter Name="Accountid" Parameter="accountid" Type="System.Int32" DbType="Int" />
+    <ElementType Name="alertLessThan7DaysResult">
+      <Column Name="accountid" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.getBathOfPacket" Method="getBathOfPacket">
+    <ElementType Name="getBathOfPacketResult">
+      <Column Name="price" Type="System.Double" DbType="Float" CanBeNull="true" />
+    </ElementType>
+  </Function>
+</Database>
